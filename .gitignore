@@ -1,0 +1,5 @@
+mnt/
+customize.sh
+Image
+*-base-*
+ubuntu.ext4

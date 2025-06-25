@@ -1,0 +1,31 @@
+#!/bin/bash
+
+set -e
+
+echo 'UUID=UUUUIIDD / ext4 errors=remount-ro 0 0' > /etc/fstab
+echo 'tmpfs /tmp tmpfs defaults 0 0' >> /etc/fstab
+export DEBIAN_FRONTEND=noninteractive
+apt-get update
+apt-get install -y \
+  console-setup \
+  kbd \
+  less \
+  nano \
+  python3-minimal \
+  sudo \
+  systemd \
+  systemd-sysv \
+  tint \
+  vim-tiny
+systemctl set-default multi-user.target
+sed -i 's|TTYVTDisallocate=yes|TTYVTDisallocate=no|' \
+  /usr/lib/systemd/system/getty@.service
+ln -sf /lib/systemd/system/getty@.service \
+  /etc/systemd/system/getty.target.wants/getty@ttyS0.service
+echo 'ubuntu' > /etc/hostname
+if [ ! -d '/home/ubuntu' ]; then
+	adduser ubuntu --gecos "Ubuntu" --disabled-password; true
+	adduser ubuntu sudo
+	echo 'ubuntu:ubuntu' | chpasswd
+	sed -i '1s|^|export TERM=xterm-256color\n|' /home/ubuntu/.bashrc
+fi
