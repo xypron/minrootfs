@@ -1,7 +1,10 @@
 #!/bin/make
 # SPDX-License-Identifier: MIT
 
+ARCH=riscv64
 OUTFILE=ubuntu.ext4
+RELEASE=noble
+QEMU_ARCH=riscv64
 UUID:=${shell uuidgen}
 
 .PHONY: prepare
@@ -14,10 +17,10 @@ all:
 	make umount
 	make compress
 
-noble-base-riscv64.tar.gz:
-	wget https://cdimage.ubuntu.com/ubuntu-base/noble/daily/current/noble-base-riscv64.tar.gz
+$(RELEASE)-base-$(ARCH).tar.gz:
+	wget https://cdimage.ubuntu.com/ubuntu-base/$(RELEASE)/daily/current/$(RELEASE)-base-$(ARCH).tar.gz
 
-prepare: noble-base-riscv64.tar.gz
+prepare: $(RELEASE)-base-$(ARCH).tar.gz
 	rm -rf $(OUTFILE)
 	truncate $(OUTFILE) -s 750M
 	echo $(UUID)
@@ -26,7 +29,7 @@ prepare: noble-base-riscv64.tar.gz
 	chmod 755 customize.sh
 	mkdir -p mnt/
 	sudo mount $(OUTFILE) mnt/
-	sudo tar -xzf noble-base-riscv64.tar.gz -C mnt/
+	sudo tar -xzf $(RELEASE)-base-$(ARCH).tar.gz -C mnt/
 	sudo umount mnt/; true
 
 mount:
@@ -54,7 +57,7 @@ compress:
 	xz -z $(OUTFILE) --stdout > $(OUTFILE).$$(date +%Y%m%d).xz
 
 run:
-	qemu-system-riscv64 \
+	qemu-system-$(QEMUARCH) \
 	-machine virt,acpi=off \
 	-m 1G \
 	-nographic \
