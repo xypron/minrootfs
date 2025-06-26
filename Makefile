@@ -4,7 +4,7 @@
 ARCH=riscv64
 OUTFILE=ubuntu.ext4
 RELEASE=noble
-QEMU_ARCH=riscv64
+QEMUARCH=riscv64
 UUID:=${shell uuidgen}
 
 .PHONY: prepare
