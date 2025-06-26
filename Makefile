@@ -1,4 +1,5 @@
 #!/bin/make
+# SPDX-License-Identifier: MIT
 
 OUTFILE=ubuntu.ext4
 UUID:=${shell uuidgen}
